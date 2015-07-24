@@ -1,0 +1,540 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Goibibo Developer API",
+    "version": "1.0.0",
+    "description": "You can make use of our travel options via this"
+  },
+  "host": "developer.goibibo.com",
+  "basePath": "/api",
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/search": {
+      "get": {
+        "tags": [
+          "flight"
+        ],
+        "summary": "flight search results",
+        "description": "The search API enables you to search for operational flights based on specified parameters, i.e. route details, departure and arrival dates, cabin type and passenger details.",
+        "operationId": "getFlightSearchResults",
+        "parameters": [
+          {
+            "name": "app_id",
+            "description": "Your access application id",
+            "type": "string",
+            "in": "query"
+          },
+          {
+            "name": "app_key",
+            "description": "Your access application key",
+            "type": "string",
+            "in": "query"
+          },
+          {
+            "name": "format",
+            "description": "Response format",
+            "type": "string",
+            "required": false,
+            "in": "query",
+            "enum": [
+              "json",
+              "xml"
+            ],
+            "default": "json"
+          },
+          {
+            "name": "source",
+            "description": "Origin Airport code. Should be a valid IATA code",
+            "type": "string",
+            "required": true,
+            "in": "query"
+          },
+          {
+            "name": "destination",
+            "description": "Destination Airport code. Should be a valid IATA code",
+            "type": "string",
+            "required": true,
+            "in": "query"
+          },
+          {
+            "name": "dateofdeparture",
+            "description": "Departure Date (onward flights only). Format (YYYYMMDD)",
+            "type": "string",
+            "required": true,
+            "in": "query"
+          },
+          {
+            "name": "dateofarrival",
+            "description": "Arrival Date (onward & return Flights). Format (YYYYMMDD)",
+            "type": "string",
+            "required": false,
+            "in": "query"
+          },
+          {
+            "name": "seatingclass",
+            "description": "Travel Class/Cabin Type. E(Economy) or B(Business).",
+            "type": "string",
+            "required": true,
+            "in": "query",
+            "enum": [
+              "E",
+              "B"
+            ],
+            "default": "E"
+          },
+          {
+            "name": "adults",
+            "description": "No of Adults. Integer value between 1-9. Minimum of one adult is required.",
+            "type": "integer",
+            "required": true,
+            "in": "query",
+            "default": "1",
+            "enum": [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9"
+            ]
+          },
+          {
+            "name": "children",
+            "description": "No of children.  Integer value between 0-9.",
+            "type": "integer",
+            "required": true,
+            "in": "query",
+            "default": "0",
+            "enum": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9"
+            ]
+          },
+          {
+            "name": "infants",
+            "description": "No of infants.  Integer value between 0-9.",
+            "type": "integer",
+            "required": true,
+            "in": "query",
+            "default": "0",
+            "enum": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/stats/minfare": {
+      "get": {
+        "tags": [
+          "flight",
+          "bus"
+        ],
+        "summary": "flight/bus details with minimum fare",
+        "description": "The Minimum fare API gives you the details of flight having minimum fare in a given sector and date range.",
+        "operationId": "getFlightorBusMinFareResults",
+        "parameters": [
+          {
+            "name": "app_id",
+            "description": "Your access application id",
+            "type": "string",
+            "in": "query"
+          },
+          {
+            "name": "app_key",
+            "description": "Your access application key",
+            "type": "string",
+            "in": "query"
+          },
+          {
+            "name": "format",
+            "description": "Response format.",
+            "type": "string",
+            "required": false,
+            "in": "query",
+            "enum": [
+              "json",
+              "xml"
+            ],
+            "default": "json"
+          },
+          {
+            "name": "vertical",
+            "description": "The vertical for which minimum fare details are required. Send 'flight' to get airline details and 'bus' for bus details. Default is flight.",
+            "type": "string",
+            "required": false,
+            "in": "query",
+            "default": "flight",
+            "enum": [
+              "flight",
+              "bus"
+            ]
+          },
+          {
+            "name": "source",
+            "description": "Origin Airport/City code. In case of flights, it should be a valid IATA code",
+            "type": "string",
+            "required": true,
+            "in": "query"
+          },
+          {
+            "name": "destination",
+            "description": "Destination Airport/City code. In case of flight, it should be a valid IATA code",
+            "type": "string",
+            "required": true,
+            "in": "query"
+          },
+          {
+            "name": "mode",
+            "description": "Mode of result. 'one' returns only one airline/bus per day which has the minimum fare. All returns minimum fares for all available airlines/buses per day. Default value is one.",
+            "type": "string",
+            "required": false,
+            "in": "query",
+            "default": "one",
+            "enum": [
+              "one",
+              "all"
+            ]
+          },
+          {
+            "name": "sdate",
+            "description": "Starting of date range for which minimum fares are required (YYYYMMDD format)",
+            "type": "string",
+            "required": true,
+            "in": "query"
+          },
+          {
+            "name": "edate",
+            "description": "Ending of date range for which minimum fares are required (YYYYMMDD format). Default value equals sdate",
+            "type": "string",
+            "required": false,
+            "in": "query"
+          },
+          {
+            "name": "class",
+            "description": "Travel Class/Cabin Type. NA(no filtering is done by class), E(Economy), B(Business). Default value is NA. This parameter is applicable only for flights",
+            "type": "string",
+            "required": false,
+            "in": "query",
+            "default": "NA",
+            "enum": [
+              "NA",
+              "E",
+              "B"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/bus/search": {
+      "get": {
+        "tags": [
+          "bus"
+        ],
+        "summary": "Returns bus search results",
+        "description": "This API provides available bus details operating in a given sector as per the chosen dates.",
+        "operationId": "getBusSearchResults",
+        "parameters": [
+          {
+            "name": "app_id",
+            "description": "Your access application id",
+            "type": "string",
+            "in": "query"
+          },
+          {
+            "name": "app_key",
+            "description": "Your access application key",
+            "type": "string",
+            "in": "query"
+          },
+          {
+            "name": "format",
+            "description": "Response format. xml or json. Default value is json",
+            "type": "string",
+            "required": false,
+            "in": "query",
+            "default": "json",
+            "enum": [
+              "json",
+              "xml"
+            ]
+          },
+          {
+            "name": "source",
+            "description": "Origin city. Eg- bangalore",
+            "type": "string",
+            "required": true,
+            "in": "query"
+          },
+          {
+            "name": "destination",
+            "description": "Destination city. Eg-hyderabad",
+            "type": "string",
+            "required": true,
+            "in": "query"
+          },
+          {
+            "name": "dateofdeparture",
+            "description": "Start date for onward bus journey. Format (YYYYMMDD)",
+            "type": "string",
+            "required": true,
+            "in": "query"
+          },
+          {
+            "name": "dateofarrival",
+            "description": "Start date for return bus journey. Format (YYYYMMDD). It's optional, required only for roundtrip journey.",
+            "type": "string",
+            "required": false,
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/bus/seatmap": {
+      "get": {
+        "tags": [
+          "bus"
+        ],
+        "summary": "Returns bus seats layout and availability",
+        "description": "This API provides details of seat availablity and layout of a bus running on a particular sector on a given day.",
+        "operationId": "getBusSeatMapResults",
+        "parameters": [
+          {
+            "name": "app_id",
+            "description": "Your access application id",
+            "type": "string",
+            "in": "query"
+          },
+          {
+            "name": "app_key",
+            "description": "Your access application key",
+            "type": "string",
+            "in": "query"
+          },
+          {
+            "name": "format",
+            "description": "Response format. xml or json. Default value is json",
+            "type": "string",
+            "required": false,
+            "in": "query",
+            "default": "json",
+            "enum": [
+              "json",
+              "xml"
+            ]
+          },
+          {
+            "name": "skey",
+            "description": "Search key of the bus whose seat map is required. Search key is given by the bus search API for every bus.",
+            "type": "string",
+            "required": true,
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/voyager": {
+      "get": {
+        "tags": [
+          "hotels"
+        ],
+        "summary": "Returns hotels search result",
+        "description": "The 'Search hotel by city' API enables you to get a list of hotels available in a city alongwith information of each hotel.",
+        "operationId": "getHotelSearchResults",
+        "parameters": [
+          {
+            "name": "app_id",
+            "description": "Your access application id",
+            "type": "string",
+            "in": "query"
+          },
+          {
+            "name": "app_key",
+            "description": "Your access application key",
+            "type": "string",
+            "in": "query"
+          },
+          {
+            "name": "method",
+            "description": "Name of the method to call. In this case set it as 'hotels.get_hotels_data_by_city'",
+            "type": "string",
+            "required": true,
+            "in": "query",
+            "default": "hotels.get_hotels_data_by_city",
+            "enum": [
+              "hotels.get_hotels_data_by_city"
+            ]
+          },
+          {
+            "name": "city_id",
+            "description": "City ID. Example for Bangalore use 6771549831164675055 . The entire list of city ids can be found in the 'Data' section.",
+            "type": "integer",
+            "required": true,
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/voyager/": {
+      "get": {
+        "tags": [
+          "hotels"
+        ],
+        "summary": "Returns details of given hotel",
+        "description": "Get Hotel Data API fetches all the static details of the hotel like images, description, categorization, location, room information etc.",
+        "operationId": "getHotelDetails",
+        "parameters": [
+          {
+            "name": "app_id",
+            "description": "Your access application id",
+            "type": "string",
+            "in": "query"
+          },
+          {
+            "name": "app_key",
+            "description": "Your access application key",
+            "type": "string",
+            "in": "query"
+          },
+          {
+            "name": "method",
+            "description": "Type of response required",
+            "type": "string",
+            "required": true,
+            "in": "query",
+            "default": "hotels.get_hotels_data",
+            "enum": [
+              "hotels.get_hotels_data"
+            ]
+          },
+          {
+            "name": "id_list",
+            "description": "List of hotel ids. Example : '[1017089108070373346, 6085103403340214927]' ",
+            "type": "string",
+            "required": true,
+            "in": "query"
+          },
+          {
+            "name": "id_type",
+            "description": "The type of id being passed in 'id_list' parameter. You need to set it as '_id'",
+            "type": "string",
+            "required": true,
+            "in": "query",
+            "default": "_id",
+            "enum": [
+              "_id"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/cyclone": {
+      "get": {
+        "tags": [
+          "hotels"
+        ],
+        "summary": "Get hotel price by city",
+        "description": "This API fetches the price information of all the available hotels in the given city.",
+        "operationId": "getHotelPriceByCity",
+        "parameters": [
+          {
+            "name": "app_id",
+            "description": "Your access application id",
+            "type": "string",
+            "in": "query"
+          },
+          {
+            "name": "app_key",
+            "description": "Your access application key",
+            "type": "string",
+            "in": "query"
+          },
+          {
+            "name": "city_id",
+            "description": "City ID of the city for which hotel prices are required. Example for Bangalore use 6771549831164675055. The full list of city ids can be found in 'Data' section.",
+            "type": "integer",
+            "required": true,
+            "in": "query"
+          },
+          {
+            "name": "check_in",
+            "description": "Hotel Check in date in the format YYYYMMDD",
+            "type": "integer",
+            "required": true,
+            "in": "query"
+          },
+          {
+            "name": "check_out",
+            "description": "Hotel Check out date in the format YYYYMMDD",
+            "type": "integer",
+            "required": true,
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          }
+        }
+      }
+    }
+  }
+}
