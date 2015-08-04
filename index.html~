@@ -27,7 +27,7 @@
       if (url && url.length > 1) {
         url = decodeURIComponent(url[1]);
       } else {
-        url = "http://127.0.0.1:8000/documentation_json/goibibo_dev.json";
+        url = "http://goibibo.github.io/goibibobusinessapi/documentation_json/goibibo_dev.json";
       }
       window.swaggerUi = new SwaggerUi({
         url: url,
@@ -41,13 +41,10 @@
               appName: "your-app-name"
             });
           }
-
           $('pre code').each(function(i, e) {
             hljs.highlightBlock(e)
           });
-
-          //addApiKeyAuthorization();
-          updateAuth();
+          addApiKeyAuthorization();
         },
         onFailure: function(data) {
           log("Unable to Load SwaggerUI");
@@ -56,8 +53,6 @@
         apisSorter: "alpha",
         showRequestHeaders: false
       });
-
-/*
       function addApiKeyAuthorization(){
         var key = encodeURIComponent($('#input_apiKey')[0].value);
         if(key && key.trim() != "") {
@@ -66,29 +61,13 @@
             log("added key " + key);
         }
       }
-
       $('#input_apiKey').change(addApiKeyAuthorization);
-*/
-
       // if you have an apiKey you would like to pre-populate on the page for demonstration purposes...
       /*
         var apiKey = "myApiKeyXXXX123456789";
         $('#input_apiKey').val(apiKey);
       */
-
-      var updateAuth = function() {
-        var auth = "Basic " + btoa($('#input_user')[0].value + ":" + $('#input_pass')[0].value);
-        // window.authorizations.add("key", new ApiKeyAuthorization("Authorization", auth, "header"));
-        var apiKeyAuth = new SwaggerClient.ApiKeyAuthorization("Authorization", auth, "header");
-        window.swaggerUi.api.clientAuthorizations.add("Authorization", apiKeyAuth);
-        log("added auth-key(?) " + auth);
-      };
-
-      $('#input_user').change(updateAuth);
-      $('#input_pass').change(updateAuth);
-
       window.swaggerUi.load();
-
       function log() {
         if ('console' in window) {
           console.log.apply(console, arguments);
@@ -106,8 +85,6 @@
       <div class='input'><input placeholder="http://example.com/api" id="input_baseUrl" name="baseUrl" type="text"/></div>
       <div class='input'><input placeholder="api_key" id="input_apiKey" name="apiKey" type="text"/></div>
       <div class='input'><a id="explore" href="#">Explore</a></div>
-      <div class='input'><input placeholder="user" id="input_user" name="user" type="text" size="10" value="apitesting@goibibo.com" /></div>
-      <div class='input'><input placeholder="pass" id="input_pass" name="pass" type="password" size="10" value="test123" /></div>
     </form>
   </div>
 </div>
