@@ -1,0 +1,334 @@
+{
+"swagger":"2.0",
+"info":{"title":"Goibibo Developer API",
+        "version":"1.0.0",
+        "description":"You can make use of our travel options via this"
+       },
+"host":"pp.goibibobusiness.com/api",
+"basepath":"/api",
+"schemes":["http"],
+"consumes":["application/json"],
+"produces":["application/json"],
+               
+"paths":{
+         "/hotels/b2b/get_city_list/":{"get":{"tags":["hotels"],
+         "summary":"Produces list of cities",
+         "description":"This API doesn't need any parameter,It simply displays lists of cities. First number is city_id followed by city name, country name and country code.city_id would be needed for next API(/get_city_hotels/).",
+         "operationId":"city_list",
+         "responses":{"200":{"description":"successful operation"}}
+                                 } 
+                          }, 
+  
+         
+
+         "/hotels/b2b/get_city_hotels/":{"get":{"tags":["hotels"],
+         "summary":"Produces list  of hotels for a particular city",
+         "description":"This API requires 'city_id','checkin_date','checkout_date' and 'room_string' as parameters.'city_id' is obtained from the /get_city_list/ API'.No of passengers cannot exceed 9. No of rooms cannot exceed 4. Minimum of 1 adult required for booking. Number of minors/children cannot exceed number of adults. This API requires only one parameter which is a query-string in the order: hotels-cityid-checkin_date-checkout_date-room_string where value of cityid,check-in date and check-out date ( in format YYYYMMDD) and room-string has to be suffixed with hotels, separated with hyphen. Room-string contains number of rooms, no of adults separated with hyphen and number of children appended with under-score.Also in case of children, number of children should further be appended with their ages separated with underscores. If their are more than one rooms, number of rooms should be appended with number of adults and children in first room followed by number of adults and children in second room and so on. ",
+         "operatoinId":"city_hotels",
+         "parameters":
+             [
+              {"name":"query",
+               "type":"string",
+               "in":"query",
+               "description":"For example: hotels-2162254155836171767-20150423-20150425-1-2_0 Here, After hotels, first number is city id, next two numbers are checkin and checkout dates, 1 room is booked for 2 adults having no children.Room-string would contain 2-2_0-2_0 in stead of 1-2_0 for 4 adults staying in 2 rooms having no children.Here it shows that first room will be occupied by 2 adults and second room would be occupied by another 2 adults. If 4 adults,3 children are staying in 3 rooms where first room will host 1 adult, second room will host 2 adult and 1 child who is 3 years old  and 3rd room will host 1 adult and 2 children ( who are 4 and 5 years old), then  room string should be given as 3-1_0-2_1_3-1_2_4_5." 
+               }
+             ],
+          "responses":{"200":{"description":"successful operation"}}
+                                     }
+                             },
+      
+
+         "/hotels/b2b/get_hotel_details/":{"get":{"tags":["hotels"],
+         "summary":"Retrieves details of hotel for example, facilities available,nearest attraction,price etc.",
+         "description":"Requires query string of /get_city_hotels/ API i.e. hotel_id,checkin_date,checkout_date,room string and hotel code(hc),ibibo partner value(ibp) and forward params(fwdp).",
+         "operationId":"hotel_details",
+         "parameters":
+             [
+              {"name":"query",
+               "description":"query string used in /get_city_hotels/ API",
+               "type":"string",
+               "in":"query"               
+              },
+              {"name":"hc",
+               "description":"hotel code obtained from /get_city_hotels/ API",
+               "type":"number",
+               "in":"query"
+              },
+              {"name":"ibp",
+               "description":"ibibo partner value obtained from /get_city_hotels/ API",
+               "type":"string",
+               "in":"query"
+              },
+              {"name":"fwdp",
+               "description":"Forward params for Non goibibo vendors.",
+               "default":"\"\"",
+               "type":"string",
+               "in":"query"
+              } 
+             ],
+          "responses":{"200":{"description":"successful operation"}} 
+                                     }
+                             },
+                        
+
+
+            "/hotels/b2b/get_hotel_review/":{"get":{"tags":["hotels"],
+            "summary":"Provides reviews of a  hotel",
+            "description":"Provides reviews of different users for a given hotel. Requires hotel code(hc) as parameter obtained from get_city_hotels/ API",
+            "operationId":"hotel_review",
+            "parameters":[
+                 {"name":"hc",
+                  "description":"hotel code obtained from /get_city_hotels/ API",
+                  "type":"number",
+                  "in":"query"
+                 }],
+             "responses":{"200":{"description":"successful operation"}}
+                                       }
+                                },
+ 
+             "/hotels/b2b/get_hotel_cancel_policy/":{"get":{"tags":["hotels"],
+             "summary":"Informs about hotel policy and cancellation of booking policy",
+             "description":"Requires parameters: hotel code(hc),Room type code(rtc),Room plan code(rpc),forward params(fwdp) and ibibo partner value(ibp).These values can be obtained from /get_hotel_details/ API.",
+             "operationId":"hotel_details",
+             "parameters":[
+                  {"name":"query",
+                   "description":"query string used in /get_city_hotels/ API",
+                   "type":"string",
+                   "in":"query"
+                  },
+                  {"name":"hc",
+                   "description":"hotel code obtained from /get_city_hotels/ API",
+                   "type":"number",
+                   "in":"query"
+                  },
+                  {"name":"rtc",
+                   "description":"Room type code can be obtained from /get_hotel_details/ API under rooms_data",
+                   "type":"number",
+                   "in":"query"
+                   },
+                   {"name":"rpc",
+                    "description":"Room plan code can be obtained from /get_hotel_details/ API under rooms_data",
+                    "type":"number",
+                    "in":"query"
+                    },
+                    {"name":"fwdp",
+                     "description":"forward params can be obtained from /get_hotel_details/ API under rooms data",
+                     "type":"string",
+                     "in":"query"
+                     },
+                     {"name":"ibp",
+                      "description":"Ibibo partner value can be obtained from /get_hotel_details/ API under rooms_data",
+                      "type":"string",
+                      "in":"query"
+                     }      ],
+             "responses":{"200":{"description":"successful operation"}}
+                                                 }
+                                          },
+
+               "/hotels/b2b/provisional_booking/":{"post":{"tags":["hotels"],
+               "summary":"Makes provisional booking and provides gobookingid",
+               "description":"Takes query string,hotel code,ibp,rpc,rtc as url parameter and fwdp, which can be null and customer_details which will have items viz. firstname,lastname,email,mobile,country phone code and title as Form Data",
+               "operationId":"pro_booking",
+               "parameters":[
+                    {"name":"query",
+                     "description":"Query string  used in /get_city_hotels/ API",
+                     "type":"string",
+                     "in":"query"
+                    },
+                    {"name":"hc",
+                     "description":"Hotel Code obatained from /get_city_hotels/ API",
+                     "type":"number",
+                     "in":"query"
+                    },
+                    {"name":"ibp",
+                     "description":"Ibibo partner value obtained from /get_hotel_details/ API",
+                     "type":"string",
+                     "in":"query"
+                    },
+                    {"name":"rpc",
+                     "description":"Room plan code obtained from /get_hotel_details/ API",
+                     "type":"integer",
+                     "in":"query"
+                    },
+                    {"name":"rtc",
+                     "description":"Room type code obtained from /get_hotel_details/ API",
+                     "type":"integer",
+                     "in":"query"
+                    },
+                    {"name":"fwdp",
+                     "description":"forward params can be obtained from /get_hotel_details/ API under rooms data",
+                     "type":"string",
+                     "in":"formData" 
+                    },
+                    {"name":"customer_details",
+                     "description":"Enter firstname,lastname,email,mobile,country_phone_code,                                                                        title in dictionary format i.e. \"{\"firstname\":\"abc\",\"lastname\":\"                                                                       xyz\",\"email\":\"abc@gmail.com\",\"mobile\":\"9812345676\",\"                                                                                 country_phone_code\":\"+91\",\"title\":\"Mr.\"}\"",                                                                                            "in":"formData",
+                    "type":"string"                                   
+                    }                   
+                           ],
+                   "responses":{"200":{"description":"successful operation"}}
+                                             }
+                                 },
+                   "/hotels/b2b/confirm_booking/":{"post":{"tags":["hotels"],
+                   "summary":"Returns the status of booking, gobookingid and bookingid",
+                   "description":"To confirm booking, required params are secretkey which shown below and gobookingid which is obtained from Provisional Booking API",
+                   "operationId":"confirm_booking",
+                   "parameters":[
+                   {"name":"gobookingid",
+                    "description":"gobookingid is obtained from Provisional Booking API and is primary booking Id required to get status of booking and used as reference further",
+                    "type":"string",
+                    "in":"formData"
+                   },
+                   {"name":"secretkey",
+                    "description":" Create a string as described below:  createhash = paymentsalt + gobookingid + '|'+ str(amount) + '|' + productinfo.lower()+ '|' + firstname.lower() + '|' + email + '|' + udf1  + '|'  + guest + '|' +\"travelibibo\" Values of amount,productinfo,firstname,email,udf1 and guest can be obtained from Provisional Booking API while payment salt will be shared secretly with your team. Now generate createhash using formula: createhash = sha512(createhash).hexdigest(). This createhash will be passed as secretkey.",
+                    "type":"string",
+                    "in":"formData"
+                   }],
+                   "responses":{"200":{"description":"successful operation"}}
+                                 } }, 
+                                   
+      
+
+                  "/hotels/b2b/get_booking_status/":{"get":{"tags":["hotels"],
+                  "summary":"Returns booking status",
+                  "description":"To get booking status, required parameter is gobookingid which is obtained from Provisional Booking or from Confirm Booking API",
+                  "operationId":"get_booking",
+                  "parameters":[
+                   {"name":"gobookingid",
+                    "description":"Obtained from Provisional Booking API",
+                    "type":"string",
+                    "in":"query"
+                   }],
+                  "responses":{"200":{"description":"successful operation"}}
+                                           }     },
+               
+                  "/hotels/b2b/get_booking_details/":{"get":{"tags":["hotels"],
+                  "summary":"Returns booking details",
+                  "description":"To get booking details, required parameter is gobookingid which is obtained from Provisional Booking or from Confirm Booking API",
+                  "operationId":"get_booking_details",
+                  "parameters":[
+                   {"name":"gobookingid",
+                    "description":"Obtained from Provisional Booking API",
+                    "type":"string",
+                    "in":"query"
+                   }],
+                  "responses":{"200":{"description":"successful operation"}}
+                                           }     },
+
+                  "/hotels/b2b/get_refund_details/":{"get":{"tags":["hotels"],
+                  "summary":"Returns refund details",
+                  "description":"To get refund details, paid amount and amount refunded.Required parameter is gobookingid which is obtained from Provisional Booking or from Confirm Booking API",
+                  "operationId":"get_refund_details",
+                  "parameters":[
+                   {"name":"gobookingid",
+                    "description":"Obtained from Provisional Booking API",
+                    "type":"string",
+                    "in":"query"
+                   }],
+                  "responses":{"200":{"description":"successful operation"}}
+                                           }     },
+
+
+                  "/hotels/b2b/confirm_cancel/":{"post":{"tags":["hotels"],
+                  "summary":"Returns cancellation status",
+                  "description":"Returns the json response, status Flag indicates the status of cancellation done, if 1 cancelled and refunded amount else failed to refund back, but cancelled",
+                  "operationId":"confirm_cancel",
+                  "parameters":[
+                   {"name":"gobookingid",
+                    "description":"Obtained from Confirm  Booking API",
+                    "type":"string",
+                    "in":"formData"
+                   }],
+                  "responses":{"101":{"description":"Internal Server Error (Returned when  Error occured in backend code"},"102":{"description":"Check in Date should be greater than today date/Checkout date should be greater than check in date"},"103":{"description":"Max 4 adults per rooms and minimum 1 adult per room and max 2 children per room"},"104":{"description":"No of adults should be greater than 0 and no of rooms should be greater than 0"},"105":{"description":"Hotel code required"},"106":{"description":"City code required"},"107":{"description":"cancellation failed, please contact goibibo support"},"108":{"description":"BookingID is required"},"109":{"description":"Required Query String, Returned when query string is not in required format"},"110":{"description":"Couldn't find any property(Returned when hotels are not found under searched city)"},"111":{"description":"Couldn't find booking (Returned when booking sent while confirm booking not found in database"},"112":{"description":"You don't have enough amount in your account to book"},"113":{"description":"Vendor account not found"},"114":{"description":"Vendor does not Exist (When user authentication fails while making booking)"},"115":{"description":"Invalid hash key"},"116":{"description":"Error in booking"},"117":{"description":"Duplicate Booking"},"118":{"description":"BookingID and Secretkey is required"},"119":{"description":"Invalid room count"},"120":{"description":"Invalid Query string"},"121":{"description":"ibp and fwdp are required"},"122":{"description":"rpc and rtc params are required"},"123":{"description":"Invalid customer details (Returned when any of the required customer detail is missed while provisional booking)"},"124":{"description":"Invalid ibp value"},"125":{"description":"Invalid sort_type value (Returned when sort type sent during city hotels API doesn't match with required key)"},"126":{"description":"Booking cannot be cancelled (Returned when provided gobookinid is already cancelled or doesn't have cancellation option)"},"127":{"description":"Booking cannot be cancelled Online,Please contact Goibibo support team"}   }  } },
+
+                   "/search/":{"get":{"tags":["flights"],
+                  "summary":"Returns flight details like fare, route, connecting flights,timings etc.",
+                  "description":"The search API enables you to search for operational flights based on specified parameters, i.e. route details, departure and arrival dates, cabin type and passenger details.",
+                  "operationId":"search-flights",
+                  "parameters":[
+                   {"name":"format",
+                    "description":"Response format",
+                    "type":"string",
+                    "default":"JSON",
+                    "enum":["JSON","XML"],
+                    "in":"query"
+                   },
+                                      
+
+
+                   {"name":"dateofdeparture",
+                    "description":"Departure Date(onward flights only) in ISO format i.e. YYYYMMDD. It must be after Arrival Date.",
+                    "type":"string",
+                    "in":"query",
+                    "default":"None"
+                   },
+
+                   {"name":"dateofarrival",
+                    "description":"Arrival Date(onward and return flights) in ISO format i.e. YYYYMMDD",
+                    "type":"string",
+                    "in":"query",
+                    "default":"None"
+                   },
+
+                   {"name":"source",
+                    "description":"Origin Airport Code (A valid IATA code). Source should not be same as destination",
+                    "type":"string",
+                    "in":"query",
+                    "default":"None"
+                   },
+                    {"name":"destination",
+                    "description":"Destination Airport Code ( A valid IATA code)",
+                    "type":"string",
+                    "in":"query",
+                    "default":"None"
+                   },
+
+
+                   {"name":"seatingclass",
+                    "description":"Travel Class/Cabin Type e.g. E(Economy), B(Business)",
+                    "type":"string",
+                    "in":"query",
+                    "default":"E",
+                    "enum":["E","B"]
+                   },
+
+                   {"name":"adults",
+                    "description":"No of Adults(0-9). Number of passengers cannot exceed 9. Minimum of 1 adult is required for booking.",
+                    "type":"integer",
+                    "in":"query",
+                    "enum":["1","2","3","4","5","6","7","8","9"],
+                    "default":"0"
+                   },
+
+                   {"name":"children",
+                    "description":"No of Children(0-9).",
+                    "type":"integer",
+                    "in":"query",
+                    "enum":["1","2","3","4","5","6","7","8","9"],
+                    "default":"0"
+                   },
+
+                   {"name":"infants",
+                    "description":"No of Infants(Can't exceed No of Adults)",
+                    "default":"0",
+                    "type":"integer",
+                    "in":"query"
+                   },
+                                      
+                   {"name":"counter",
+                    "description":"Choice of carriers e.g. 0,1,2,3,4,5,6,7,100,101",
+                    "type":"string",
+                    "in":"query",
+                    "default":"None"
+                   },
+
+                   {"name":"discountedflights",
+                    "description":"optional parameter, if Y, gives discounted flights",
+                    "type":"string",
+                    "in":"query"
+                   }],
+                    "responses":{ "101":{"description":"Source and Destination are same" },"102":{"description":"Departure Date is after Arrival Date"},"104":{"description":"Flights not connected"},"105":{"description":"Repricing failed with airlines or flight full, please try again after some time or choose another flight"},"106":{"description":"Fare does not match, please do a reprice"},"108":{"description":"No. of passengers cannot exceed 9"},"109":{"description":"Children should be between 2 and 12 years of age"},"110":{"description":"Infants should be below 2 years of age"},"111":{"description":"Adults should be above 12 years of age"},"112":{"description":"Invalid passenger title"},"113":{"description":"Minimum of 1 adult required for booking"},"114":{"description":"Inconsistency with passenger data and bookings for each passenger type"},"115":{"description":"Date of Birth mandatory for Child and Infant Passengers"},"116":{"description":"Booking not found"},"117":{"description":"Invalid hash key"},"118":{"description":"No of infants cannot exceed no. of adults"}
+                                           }     }}
+
+                                    
+  }}
+
